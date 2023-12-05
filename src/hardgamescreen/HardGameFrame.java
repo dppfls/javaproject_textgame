@@ -1,4 +1,3 @@
-
 package hardgamescreen;
 
 import java.awt.BorderLayout;
@@ -8,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.sound.sampled.Clip;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -20,16 +18,11 @@ public class HardGameFrame extends JFrame {
 
 	public static Clip clip;
 
-	// 전반적으로 엑세스 할 수 있게 하기 위해서 빼놓는다.
 	private JMenuItem exitItem = new JMenuItem("게임 종료");
-	private JMenuItem addTextItem = new JMenuItem("단어 추가");
-	private JMenuItem informationItem = new JMenuItem("게임 정보");
 	private JMenuItem audioStartItem = new JMenuItem("배경음악 키기");
 	private JMenuItem audioStopItem = new JMenuItem("배경음악 끄기");
 	private JMenuItem audioControlItem = new JMenuItem("음량 조절");
 	private JMenuItem scoreItem = new JMenuItem("점수 기록");
-	private JButton startButton = new JButton("Start");
-	private JButton stopButton = new JButton("Stop");
 
 	private HardScorePanel scorePanel = new HardScorePanel();
 	private EditPanel editPanel = new EditPanel();
@@ -44,59 +37,58 @@ public class HardGameFrame extends JFrame {
 		scorePanel.setGamePanel(mediatorPanel.getGamePanel_easy());
 
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image img = toolkit.getImage("resource/img/favcion_bugi.png");// 이모티콘
+		Image img = toolkit.getImage("resource/img/icon_su.jpg");// 이모티콘
 		setIconImage(img);
 
 		this.id = id;
 		editPanel.setId(id);
-		setTitle("타이핑 게임");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 이창만꺼지기
+		setTitle("수룡이 타이핑 게임");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 이 창만 꺼지기
 		setSize(800, 600);
 
-		splitPane(); // JSplitPane을 생성하여 컨테트팬에 CENTER에 부착.
+		splitPane(); // JSplitPane을 생성하여 content pane에 CENTER에 부착
 		makeMenu();
-		setLocationRelativeTo(null);
-		setResizable(false); // 함부로 크기를 변경하지 않게.
+		setLocationRelativeTo(null); // 프레임을 화면의 정 가운데에 위치시킴
+		setResizable(false); // 프레임의 크기를 사용자가 함부러 변경할 수 없음
 		setVisible(true);
 	}
 
+	// hard게임 패널
 	public HardGamePanel getGamePanel() {
 		return hardgamePanel;
-	}// easy게임 패널
+	}
 
-	// ContentPane을 SplitPanne으로 나눌거임.
-
+	// ContentPane을 SplitPanne으로 나눔
 	private void splitPane() {
 		JSplitPane hPane = new JSplitPane();
-		// ContentPane()은 BorderLayout이 기본.
+		// ContentPane()은 BorderLayout이 기본
 		getContentPane().add(hPane, BorderLayout.CENTER);
 
 		hPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 		hPane.setDividerLocation(550);
 
-		// 못움직이게 고정시키기. - 이건 모든 컴포넌트에 다 적용된다.
+		// 못 움직이게 고정 - 이건 모든 컴포넌트에 다 적용됨
 		hPane.setEnabled(false);
 
-		// 왼쪽에 게임패널 넣기.
+		// 왼쪽에 게임패널 넣기
 		hPane.setLeftComponent(hardgamePanel);
 
-		// 왼쪽에 붙일 패널과 오른족에 붙일 패널을 만들어줘야된다.
+		// 왼쪽에 붙일 패널과 오른족에 붙일 패널을 생성
 		JSplitPane pPane = new JSplitPane();
 		pPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		pPane.setDividerLocation(300);
+		pPane.setDividerLocation(200);
 		pPane.setEnabled(false);
 
-		// ScorePanel붙이기, id 붙이기
-		pPane.setTopComponent(scorePanel);
-
 		// EditPanel붙이기
-		pPane.setBottomComponent(editPanel);
+		pPane.setTopComponent(editPanel);
+		// ScorePanel붙이기
+		pPane.setBottomComponent(scorePanel);
 
-		// 오른쪽에 pPane 넣기.
+		// 오른쪽에 pPane 넣기
 		hPane.setRightComponent(pPane);
 	}
 
-	// 메뉴바를 만드는 함수.
+	// 메뉴바
 	private void makeMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
@@ -105,38 +97,27 @@ public class HardGameFrame extends JFrame {
 		JMenu gameMenu = new JMenu("게임");
 		gameMenu.add(exitItem);
 
-		// 설정 관련 메뉴
-		JMenu setMenu = new JMenu("설정");
-		setMenu.add(addTextItem);
-
 		// 소리 관련 메뉴
-		JMenu soundMenu = new JMenu("볼륨");
+		JMenu soundMenu = new JMenu("설정");
 		soundMenu.add(audioStartItem);
 		soundMenu.add(audioStopItem);
 		soundMenu.add(audioControlItem);
-
-		// 개발자 정보관련 메뉴
-		JMenu informationMenu = new JMenu("도움");
-		informationMenu.add(informationItem);
 
 		// 점수 관련 메뉴
 		JMenu scoreMenu = new JMenu("점수");
 		scoreMenu.add(scoreItem);
 
 		menuBar.add(gameMenu);
-		menuBar.add(setMenu);
 		menuBar.add(soundMenu);
-		menuBar.add(informationMenu);
 		menuBar.add(scoreMenu);
 
 		// 액션리스너
 		exitItem.addActionListener(new ExitAction());
-		addTextItem.addActionListener(new addWordAction());
 
 		audioStopItem.addActionListener(new audioStopAction());
 		audioStartItem.addActionListener(new audioStartAction());
 		audioControlItem.addActionListener(new audioAction());
-		informationItem.addActionListener(new InformationAction());
+
 		scoreItem.addActionListener(new ScoreAction());
 
 		audioStartItem.setEnabled(false);
@@ -148,16 +129,6 @@ public class HardGameFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.exit(0);
-		}
-	}
-
-	// 게임 단어추가
-	private class addWordAction implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// 새로운 창 추가.
-			// 단어를 추가할 수 있는 창.
-			AddTextFrame addTextFrame = new AddTextFrame();
 		}
 	}
 
@@ -183,14 +154,6 @@ public class HardGameFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			ControlSoundFrame controlSoundFrame = new ControlSoundFrame();
-		}
-	}
-
-	// 게임 정보
-	private class InformationAction implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			InformationFrame informationFrame = new InformationFrame();
 		}
 	}
 
