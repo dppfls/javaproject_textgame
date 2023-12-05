@@ -1,6 +1,7 @@
 package hardgamescreen;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -8,33 +9,38 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class HardGamePanel extends JPanel {
-
+	private boolean showRectangle = false;
 	// Audio 관련 클립
 	private Clip effectSoundClip; // 정답
-	private Clip effectSoundClip2; // 오답.
+	private Clip effectSoundClip2; // 오답
 	private Clip gameOverClip; // 게임오버
 	private Clip lifeMinusClip; // 생명 감소
 
 	private JTextField input = new JTextField(25);
 	private JLabel timeLabel = new JLabel("Time: 02:00");
-	private ImageIcon gameBackGround = new ImageIcon("resource/img/GameBackground.jpg");
+	private ImageIcon gameBackGround = new ImageIcon("resource/img/HardGameBackground.jpg");
 
 	private Vector<TextObject> textArr = new Vector<TextObject>(50);
 	private HardScorePanel scorePanel = null;
 	private EditPanel editPanel = null;
-	private TextSource textSource = new TextSource(); // 단어 백터 생성.
+	private TextSource textSource = new TextSource(); // 단어 생성
 	private int number = 0;
 
 	private int life = 3; // hard 초기 라이프
@@ -42,16 +48,20 @@ public class HardGamePanel extends JPanel {
 	private Vector<LifeIcon> lifeIcons = new Vector<LifeIcon>();
 	private Vector<LifePanel> lifePanels = new Vector<LifePanel>();
 
-	public int pixel = 10;
-	public int speed = 20;
-	public int gameLevel = 1;
+	private Timer itemTimer;// 타이머
+	private ImageIcon itemIcon = new ImageIcon("resource/img/item.png"); // 생명 아이템 사진
 
-	// Thread 재시작 하기 위해서 Vector를 사용.
+	public int pixel = 10;
+	public int speed = 15;
+	public int gameLevel = 1;
+	private JLabel feverLabel = new JLabel("Fever Time!");// 피버타임 글씨
+
+	// 스레드 재시작 하기 위해서 벡터를 사용.
 	private int threadCount = 0;
 	private Vector<RainThread> rainThreads = new Vector<RainThread>();
 	private Vector<TimeThread> timeThreads = new Vector<TimeThread>();
 	private Vector<AudioThread> audioThreads = new Vector<AudioThread>();
-	private int threadStateFlag = 2; // set ..
+	private int threadStateFlag = 2;
 	private AudioThread audioThread = new AudioThread();
 	private EndGameFrame endGameFrame = new EndGameFrame();
 
@@ -93,6 +103,13 @@ public class HardGamePanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		Dimension d = getSize();
 		g.drawImage(gameBackGround.getImage(), 0, 0, d.width, d.height, null);
+
+		if (showRectangle) {
+			// 블랙아웃을 위한 검은색 사각형 그리기
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, getWidth(), getHeight());
+		}
+
 	}
 
 	private String setTime(int sec) {// 시간설정
@@ -103,7 +120,7 @@ public class HardGamePanel extends JPanel {
 		return "Time:" + min + ":" + sec;
 	}
 
-	class RainThread extends Thread { // 산성비 메소드 thread 상속
+	class RainThread extends Thread { // 스레드 상속
 		private int score = 0;
 
 		public int getScore() {
@@ -113,7 +130,7 @@ public class HardGamePanel extends JPanel {
 		synchronized public void run() {
 			try {
 				while (true) {
-					// ****************************Game over ************************//
+					// game over
 					if (Thread.interrupted()) {
 						break;
 					}
@@ -142,21 +159,19 @@ public class HardGamePanel extends JPanel {
 					} else if (score > 900 && score <= 1000) {
 						setLevel(10);
 					}
-					// System.out.println("RainThread start");
+
 					setText();
 					changePosition();
 					HardGamePanel.this.repaint();
-					// 능력사용 - 속도를 변경 한다.
 
-					if (threadStateFlag >= 200) { // Blue Ability
-						System.out.println("** blue text ability run ***");
-						Thread.sleep(3000);
+					if (threadStateFlag >= 200) {
+						Thread.sleep(3000); // 3초 정지
 						threadStateFlag = 0;
 					} else if (threadStateFlag < 0) {
-						Thread.sleep(500);
+						Thread.sleep(500); // 0.5초 정지
 					} else {
 						threadStateFlag = 0;
-						Thread.sleep(1000);
+						Thread.sleep(1000); // 1초 정지
 					}
 					System.out.println("ability protocol :" + threadStateFlag);
 					threadStateFlag++;
@@ -168,11 +183,60 @@ public class HardGamePanel extends JPanel {
 		}
 	}
 
+	// 블랙아웃을 위한 검은색 사각형이 나타나게 하는 메서드
+	public void showRectangle() {
+		showRectangle = true;
+		repaint();
+
+		// 3초 후에 검은색 사각형 숨기기
+		Timer timer = new Timer(3000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showRectangle = false;
+				repaint();
+			}
+		});
+		timer.setRepeats(false);
+		timer.start();
+	}
+
+	// TextOBject를 보이게 하는 메서드
+	public void showTextObjects() {
+		// TextObject를 나타내는 코드
+		for (int i = 0; i < textArr.size(); i++) {
+			TextObject tmp = (TextObject) textArr.get(i);
+			tmp.setVisible(true);
+		}
+		repaint();
+	}
+
+	// TextOBject를 숨기는 메서드
+	public void hideTextObjects() {
+		for (int i = 0; i < textArr.size(); i++) {
+			TextObject tmp = (TextObject) textArr.get(i);
+			tmp.setVisible(false);
+		}
+		repaint();
+		// 3초 후에 다시 나타내기
+		Timer showTimer = new Timer(3000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showTextObjects();
+			}
+		});
+		showTimer.setRepeats(false);
+		showTimer.start();
+	}
+
 	class TimeThread extends Thread {
 		private int time = 120; // 게임 시간 2분
 
 		public int getTime() {
 			return time;
+		}
+
+		public void resetTime() {
+			time = 120; // 초기값으로 설정 또는 원하는 값으로 변경
 		}
 
 		synchronized public void run() {
@@ -188,28 +252,38 @@ public class HardGamePanel extends JPanel {
 
 					time--;
 					timeLabel.setText(setTime(time));
+					if (time % 20 == 0) { // 20초마다 한 번씩 블랙아웃이 일어남
+						showBlackRectangle();
+						hideTextObjects();
+					}
+
 					Thread.sleep(1000);
 
 				} catch (InterruptedException e) {
 					timeLabel.setText(setTime(0));
 					System.out.println("Kill TimeThread");
 					e.printStackTrace();
+					interrupt();
 					break;
 				}
 			}
 		}
+
+		public void showBlackRectangle() {
+			showRectangle();
+		}
+
 	}
 
-	// Score를 기준으로 Level이 변경된다.
-	private void setLevel(int level) {// 레벨이 올라갈수록 속도를 증가시킨다
+	private void setLevel(int level) {// 레벨이 올라갈수록 속도가 빨라짐
 		switch (level) {
 		case 1:
 			scorePanel.setLevel(1);
-			this.speed = 10;
+			this.speed = 15;
 			break;
 		case 2:
 			scorePanel.setLevel(2);
-			this.speed = 15;
+			this.speed = 17;
 			break;
 		case 3:
 			scorePanel.setLevel(3);
@@ -225,15 +299,15 @@ public class HardGamePanel extends JPanel {
 			break;
 		case 6:
 			scorePanel.setLevel(6);
-			this.speed = 33;
+			this.speed = 32;
 			break;
 		case 7:
 			scorePanel.setLevel(7);
-			this.speed = 35;
+			this.speed = 34;
 			break;
 		case 8:
 			scorePanel.setLevel(8);
-			this.speed = 37;
+			this.speed = 36;
 			break;
 		case 9:
 			scorePanel.setLevel(9);
@@ -259,7 +333,7 @@ public class HardGamePanel extends JPanel {
 			// 색 설정
 			switch (tmp.getAbility()) {
 			case 0:
-				tmp.setForeground(Color.BLACK);
+				tmp.setForeground(Color.WHITE);
 				break;
 			case 1:
 				tmp.setForeground(new Color(137, 7, 255));// 보라색
@@ -280,21 +354,42 @@ public class HardGamePanel extends JPanel {
 
 	public void resetGame() {
 		scorePanel.setEnabledStartButton();
+
+		if (itemTimer != null && itemTimer.isRunning()) {
+			itemTimer.stop();
+		}
+		// 아이템 제거
+		Component[] components = getComponents();
+		for (Component component : components) {
+			if (component instanceof JLabel) {
+				JLabel label = (JLabel) component;
+				if (label.getIcon() == itemIcon) {
+					remove(label);
+				}
+			}
+		}
+
 		// life객체 지우기
 		LifePanel lifePanel = lifePanels.get(threadCount);
 		lifePanel.removeAll();
 		remove(lifePanel);
-
 		number = 0;
-		life = 5;
+		life = 3;
 		pixel = 10;
-		speed = 10;
+		speed = 15;
 		gameLevel = 1;
 		for (int i = 0; i < textArr.size(); i++) {
 			TextObject textTmp = (TextObject) textArr.get(i);
 			textTmp.setText("");
 		}
 		getRainThread().interrupt();
+		getTimeThread().interrupt(); // 중단된 스레드에 대해 interrupt 호출
+		try {
+			getTimeThread().join(); // 스레드의 종료를 기다림
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		getTimeThread().resetTime();
 		getAudioThread().interrupt();
 
 		scorePanel.resetLevelAndPoint();
@@ -315,10 +410,12 @@ public class HardGamePanel extends JPanel {
 		getTimeThread().start();
 		getRainThread().start();
 		System.out.println((threadCount + 1) + "번째 시도 시작.(threadMake)");
+		itemTimer.start();
 
 		// 배경음악 시작
 		loadAudio("resource/sound/bgm.wav");
 		getAudioThread().start();
+		feverLabel.setVisible(false);
 	}
 
 	private synchronized void changePosition() {
@@ -382,15 +479,11 @@ public class HardGamePanel extends JPanel {
 				add(lifeIcon);
 			}
 
-		}// 생성자
+		}
 
 	}
 
-	/*
-	 * * * 오디오 효과 * *
-	 */
-
-	// 맞출때 효과
+	// 정답 맞출때 효과
 	private void loadAnswerEffectAudio() {
 		try {
 			effectSoundClip = AudioSystem.getClip();
@@ -417,7 +510,7 @@ public class HardGamePanel extends JPanel {
 		}
 	}
 
-	// 라이프 감소 효과
+	// 생명 감소 효과
 	private void loadLifeEffectAudio() {
 		try {
 			lifeMinusClip = AudioSystem.getClip();
@@ -476,19 +569,100 @@ public class HardGamePanel extends JPanel {
 
 	}
 
+	// 생명아이템이 나타나고 5초 후 사라지게 하는 메서드
+	private void spawnItem() {
+		int x = (int) (Math.random() * getWidth());
+		int y = (int) (Math.random() * getHeight());
+
+		ImageIcon scaledIcon = new ImageIcon(itemIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+		JLabel itemLabel = new JLabel(scaledIcon);
+		itemLabel.setSize(40, 40);
+		itemLabel.setLocation(x, y);
+		itemLabel.addMouseListener(new ItemClickListener());
+		add(itemLabel);
+		repaint();
+
+		// 5초 후에 아이템 제거를 위한 타이머 설정
+		Timer removeItemTimer = new Timer(5000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				remove(itemLabel);
+				repaint();
+			}
+		});
+		removeItemTimer.setRepeats(false); // 한 번만 실행하도록 설정
+		removeItemTimer.start();
+		itemTimer.restart();
+	}
+
+	// 생명아이템 액션리스너
+	private class ItemClickListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			remove((Component) e.getSource());
+			life++;
+			updateLifePanel();
+		}
+	}
+
+	private void updateLifePanel() {
+		LifeIcon lifeIcon = new LifeIcon();
+		lifeIcons.add(lifeIcon);
+
+		LifePanel lifePanel = lifePanels.get(threadCount);
+		lifePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5)); // 레이아웃 설정
+
+		lifePanel.add(lifeIcon);
+		lifePanel.revalidate(); // 레이아웃 업데이트 확인
+		repaint();
+	}
+
+	// 랜덤한 시간을 반환하는 메서드
+	private int getRandomSpawnTime() {
+		Random random = new Random();
+		// 30초에서 60초 사이에 랜덤한 값 설정
+		int minDelay = 30000; // 30초
+		int maxDelay = 60000; // 60초
+		return random.nextInt(maxDelay - minDelay + 1) + minDelay;
+	}
+
 	public HardGamePanel(HardScorePanel scorePanel, EditPanel editPanel) {
 		this.scorePanel = scorePanel;
 		this.editPanel = editPanel;
 
 		setLayout(null);
 
-		input.setBounds(216, 481, 116, 21);
+		input.setBounds(216, 481, 130, 25);// 텍스트 입력 상자 위치,크기 설정
+		input.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // 테두리 색상 및 굵기
 		add(input);
 		input.setColumns(10);
-		timeLabel.setFont(new Font("Eras Bold ITC", Font.PLAIN, 15));
+		timeLabel.setFont(new Font("한글 말랑말랑 BOLD", Font.BOLD, 15));
 		timeLabel.setSize(127, 24);
 		timeLabel.setLocation(0, 0);
+		timeLabel.setForeground(Color.WHITE);
 		add(timeLabel);
+
+		feverLabel.setFont(new Font("Eras Bold ITC", Font.PLAIN, 15));
+		feverLabel.setSize(150, 24);// 타임라벨 바로 밑에
+		feverLabel.setLocation(0, 30);
+		feverLabel.setForeground(Color.RED);
+		feverLabel.setVisible(false);
+		add(feverLabel);
+
+		// 생명아이템 관련 타이머
+		itemTimer = new Timer(getRandomSpawnTime(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (life > 0) {
+					spawnItem();
+					// 새로운 랜덤한 시간으로 타이머를 재설정
+					itemTimer.setInitialDelay(getRandomSpawnTime());
+					itemTimer.restart();
+				}
+			}
+		});
+		itemTimer.start();
 
 		input.addActionListener(new ActionListener() {
 			int flag = 0;
@@ -497,34 +671,61 @@ public class HardGamePanel extends JPanel {
 				JTextField t = (JTextField) e.getSource();
 				String inWord = t.getText();
 				boolean correctAnswer = false; // 정답 여부를 나타내는 플래그
+				boolean feverTimeActive = false;// 피버타임 플래그
 				for (int i = 0; i < textArr.size(); i++) {
 					TextObject textTmp = (TextObject) textArr.get(i);
+
+					while (scorePanel.getScore() >= 100 && !feverTimeActive) {
+						feverLabel.setVisible(true);
+						feverTimeActive = true; // 피버 타임 시작
+
+						if (scorePanel.getScore() >= 400) {
+							// 특정 조건에서 피버 타임 종료
+							feverLabel.setVisible(false);
+							feverTimeActive = false;
+							System.out.println("Fever time deactivated due to score >= 400!");
+							break;
+						}
+					}
+
 					if (textTmp.getText().equals(inWord)) {// 정답 맞췄을때
 						loadAnswerEffectAudio(); // 정답 맞추면 싸운드
 						Dimension d = editPanel.getSize();
 						editPanel.setCharImage(editPanel.getGraphics(), d, true);
 						switch (textTmp.getAbility()) {
-						case 0: // Black 검은색 점수+10
-							scorePanel.increase(10);
+						case 0: // white 흰색 점수+10
+							if (feverTimeActive) {
+								scorePanel.increase(20); // Double the points during fever time
+							} else {
+								scorePanel.increase(10);
+							}
 							textTmp.setText("");
 							textArr.remove(i); // 지우기
 							repaint();
 							t.setText("");
-							// System.out.println("black ability");
+
 							break;
 
 						case 1: // 보라색
 							threadStateFlag = 200; // 3초간 정지, 점수+20
-							scorePanel.increase(20);
+							if (feverTimeActive) {
+								scorePanel.increase(40); // Double the points during fever time
+							} else {
+								scorePanel.increase(20);
+							}
 							textTmp.setText("");
 							textArr.remove(i); // 지우기
 							repaint();
 							t.setText("");
-							// System.out.println("blue ability");
+
 							break;
 
 						case 2: // 빨간색
-							scorePanel.increase(50);
+							if (feverTimeActive) {
+								scorePanel.increase(100); // Double the points during fever time
+							} else {
+								scorePanel.increase(50);
+							}
 							textTmp.setText("");
 							// 모든 내용 지우기.
 							for (int j = 0; j < textArr.size(); j++) {
@@ -534,12 +735,16 @@ public class HardGamePanel extends JPanel {
 							t.setText("");
 							textArr.removeAllElements();
 							repaint();
-							// System.out.println("Green ability");
+
 							break;
 
 						case 3: // 초록색
 							threadStateFlag = -10; // 5초간 빨라짐.
-							scorePanel.increase(10);
+							if (feverTimeActive) {
+								scorePanel.increase(20); // Double the points during fever time
+							} else {
+								scorePanel.increase(10);
+							}
 							textTmp.setText("");
 							textArr.remove(i); // 지우기
 							repaint();
