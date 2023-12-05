@@ -1,4 +1,3 @@
-
 package easygamescreen;
 
 import java.awt.Color;
@@ -48,14 +47,15 @@ public class EasyScoreFrame extends JFrame {
 
 	private void recordScore() {
 		try {
-
+			// 파일 읽기
 			FileReader filereader = new FileReader(file);
 
 			BufferedReader bufReader = new BufferedReader(filereader);
 			String line = "";
 
+			// 주어진 파일을 한 줄씩 읽어옴
 			while ((line = bufReader.readLine()) != null) {
-				String arr[] = line.split("/");
+				String arr[] = line.split("/"); // "/"를 기준으로 id와 score가 나뉨
 				String id = arr[0];
 				String score = arr[1];
 
@@ -73,13 +73,11 @@ public class EasyScoreFrame extends JFrame {
 					String idRef = scoretmpRef.getId();
 					int scoreRef = scoretmpRef.getScore();
 
+					// 중복된 ID에 대하여 최고 점수를 유지하도록 처리
 					if (id.equals(idRef)) {
-
 						if (score >= scoreRef) {
-
 							scores.remove(scoretmpRef);
 						} else {
-
 							score = scoreRef;
 							scoretmp.setScore(score);
 							scores.remove(scoretmpRef);
@@ -88,6 +86,7 @@ public class EasyScoreFrame extends JFrame {
 					}
 				}
 			}
+			// 최종 점수 목록을 출력
 			for (int i = 0; i < scores.size(); i++) {
 				System.out.println(i + "\t " + scores.get(i).getId() + "\t\t " + scores.get(i).getScore());
 			}
@@ -97,39 +96,42 @@ public class EasyScoreFrame extends JFrame {
 	}
 
 	public EasyScoreFrame() {
-		recordScore();
+		recordScore(); // 기존 점수를 읽어옴
 
 		setForeground(Color.CYAN);
 		getContentPane().setForeground(Color.CYAN);
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image img = toolkit.getImage("resource/img/favcion_bugi.png");
+		Image img = toolkit.getImage("resource/img/icon_su.jpg");
 		setIconImage(img);
 		setTitle("점수 기록");
 		setSize(290, 448);
 		getContentPane().setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("아이디");
-		lblNewLabel.setFont(new Font("휴먼엑스포", Font.BOLD, 20));
+		lblNewLabel.setFont(new Font("한컴 말랑말랑 Regular", Font.BOLD, 20));
 		lblNewLabel.setBounds(41, 10, 98, 28);
 		getContentPane().add(lblNewLabel);
 
-		JLabel lblNewLabel_1 = new JLabel("아이디");
-		lblNewLabel_1.setFont(new Font("휴먼엑스포", Font.BOLD, 20));
+		JLabel lblNewLabel_1 = new JLabel("점수");
+		lblNewLabel_1.setFont(new Font("한컴 말랑말랑 Regular", Font.BOLD, 20));
 		lblNewLabel_1.setBounds(151, 10, 98, 28);
 		getContentPane().add(lblNewLabel_1);
 
 		System.out.println("--------------------------------------");
 
+		// 정렬에 사용할 임시 배열 생성
 		JLabel[] tmp = new JLabel[scores.size()];
 		String[] tmpId = new String[scores.size()];
 		int[] tmpScore = new int[scores.size()];
 
+		// 기존 점수를 임시 배열에 복사
 		for (int i = 0; i < scores.size() - 1; i++) {
 			Score scoretmp = scores.get(i);
 			tmpId[i] = scoretmp.getId();
 			tmpScore[i] = scoretmp.getScore();
 		}
 
+		// 점수를 내림차순으로 정렬
 		for (int i = 0; i < scores.size() - 1; i++) {
 			int indexMax = i;
 
@@ -148,17 +150,18 @@ public class EasyScoreFrame extends JFrame {
 			tmpId[i] = tmpString;
 		}
 
+		// 정렬된 점수를 화면과 콘솔에 출력
 		for (int i = 0; i < scores.size(); i++) {
 			String id = tmpId[i];
 			int score = tmpScore[i];
 
 			JLabel idLabel = new JLabel(id);
-			idLabel.setFont(new Font("휴먼엑스포", Font.BOLD, 20));
+			idLabel.setFont(new Font("한컴 말랑말랑 Regular", Font.BOLD, 20));
 			idLabel.setBounds(41, 10 + ((i + 1) * 27), 98, 28);
 			getContentPane().add(idLabel);
 
 			JLabel scoreLabel = new JLabel(Integer.toString(score));
-			scoreLabel.setFont(new Font("휴먼엑스포", Font.BOLD, 20));
+			scoreLabel.setFont(new Font("한컴 말랑말랑 Regular", Font.BOLD, 20));
 			scoreLabel.setBounds(151, 10 + ((i + 1) * 27), 98, 28);
 			getContentPane().add(scoreLabel);
 
@@ -167,7 +170,9 @@ public class EasyScoreFrame extends JFrame {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
-		// setResizable(false);
+		setResizable(false);
 		setVisible(true);
+
 	}
+
 }
