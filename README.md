@@ -9,6 +9,15 @@
 
 <br>
 
+## 🛠️ 기술 스택
+| 구분 | 기술 |
+|------|------|
+| Language | Java 13 |
+| GUI Framework | Java Swing |
+| IDE | Eclipse |
+
+<br>
+
 ## 👩‍💻 역할 (김예린)
 - 게임 플레이 화면(이지/하드)의 공통적인 UI 및 기능 구현
 - score화면 및 score기능 구현
@@ -16,6 +25,23 @@
 - (GameFrame.java, ScoreFrame.java, ScorePanel.java, GamePanel.java의 score부분, HardGamePanel.java의 blackRectangle부분)
 - MediatorPanel.java, GamePanel.java의 life(생명) 부분과 lifeItem 부분, InformationFrame.java
 - 기타 오류 수정
+<br>
+
+## 📁 폴더 구조
+
+javaproject_textgame/
+├─ src/
+│  ├─ GameFirstScreen/   # 타이틀/게임 설명/모드 선택 화면 및 로직
+│  ├─ easygamescreen/    # Easy 모드 화면 및 로직
+│  └─ hardgamescreen/    # Hard 모드 화면 및 로직
+│
+└─ resource/
+   ├─ img/            # 게임 배경 및 이미지 리소스
+   ├─ record/         # 점수 기록(txt)
+   ├─ sound/          # 효과음 리소스
+   └─ word/           # 게임 단어 파일
+
+
 <br>
 
 ## 🖥️ 게임 화면 및 설명
@@ -45,7 +71,7 @@
       <img width="500" height="362" src="https://github.com/user-attachments/assets/cf59f5e2-c6f9-45b9-9033-fc3fce77c3e5" /><br/>    
     </td>
     <td align="center">
-      <img width="548" height="294" src="https://github.com/user-attachments/assets/bec82f6f-5dad-4d21-915a-bbfefd3833ee" /><br/>
+      <img width="500" height="294" src="https://github.com/user-attachments/assets/bec82f6f-5dad-4d21-915a-bbfefd3833ee" /><br/>
     </td>
   </tr>
   <tr>
@@ -85,7 +111,7 @@
       <img width="929" height="703" src="https://github.com/user-attachments/assets/a2a26ee6-90b1-49c6-80ef-3713a94a24f2" /><br/>
     </td>
     <td align="center">
-      <img width="1062" height="908" src="https://github.com/user-attachments/assets/80aa446a-82f6-421a-ab92-d1785647094a" /><br/>
+      <img width="900" height="800" src="https://github.com/user-attachments/assets/80aa446a-82f6-421a-ab92-d1785647094a" /><br/>
     </td>
   </tr>
   <tr>
@@ -105,7 +131,7 @@
       <img width="914" height="678" src="https://github.com/user-attachments/assets/5e5a3ba2-de47-42a7-8b96-9ed9f0698baa" /><br/>
     </td>
     <td align="center">
-      <img width="1146" height="858" alt="Image" src="https://github.com/user-attachments/assets/d3c27291-218b-4b68-8b1f-185aa10f94fc" /><br/>
+      <img width="1146" height="700" alt="Image" src="https://github.com/user-attachments/assets/d3c27291-218b-4b68-8b1f-185aa10f94fc" /><br/>
     </td>
   </tr>
   <tr>
