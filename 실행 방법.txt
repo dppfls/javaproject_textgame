@@ -1,4 +1,4 @@
-<안내문>
+<실행 방법>
 
 1. Eclipse에서 본 프로젝트를 File → Import → Existing Projects into Workspace로 불러옵니다.
 
