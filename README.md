@@ -6,7 +6,6 @@
 최대한 높은 점수를 기록하는 게임**입니다.
 <br>
 크리스마스와 ‘수룡이’ 테마를 활용한 UI로 구현되었습니다.
-
 <br>
 
 ## 🛠️ 기술 스택
@@ -28,7 +27,7 @@
 <br>
 
 ## 📁 폴더 구조
-
+```
 javaproject_textgame/
 ├─ src/
 │  ├─ GameFirstScreen/   # 타이틀/게임 설명/모드 선택 화면 및 로직
@@ -40,7 +39,7 @@ javaproject_textgame/
    ├─ record/         # 점수 기록(txt)
    ├─ sound/          # 효과음 리소스
    └─ word/           # 게임 단어 파일
-
+```
 
 <br>
 
