@@ -1,0 +1,6 @@
+<안내문>
+
+1. Eclipse에서 본 프로젝트를 File → Import → Existing Projects into Workspace로 불러옵니다.
+
+2. Import 후, src/GameFirstScreen/GameApplication.java 파일을 실행합니다.
+   실행 시 게임 타이틀 화면이 표시되며, 게임이 시작됩니다.

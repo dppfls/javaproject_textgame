@@ -1,5 +1,6 @@
 package hardgamescreen;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,10 +20,10 @@ public class LoginFrame_hard extends JFrame {// 하드 모드 로그인 프레�
 
 	public LoginFrame_hard() {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image img = toolkit.getImage("resource/img/favcion_bugi.png");
+		Image img = toolkit.getImage("resource/img/icon_su.jpg");
 		setIconImage(img);
 
-		setTitle("아이디 입력");
+		setTitle("아이디");
 		setSize(233, 131);
 		getContentPane().setLayout(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -31,7 +33,7 @@ public class LoginFrame_hard extends JFrame {// 하드 모드 로그인 프레�
 		getContentPane().add(textField);
 		textField.setColumns(10);
 
-		JButton registerButton = new JButton("등록");// 등록
+		JButton registerButton = new JButton("게임 시작");
 		registerButton.setFont(new Font("한컴 말랑말랑 Regular", Font.PLAIN, 16));
 
 		registerButton.addActionListener(new ActionListener() {
@@ -40,22 +42,21 @@ public class LoginFrame_hard extends JFrame {// 하드 모드 로그인 프레�
 			public void actionPerformed(ActionEvent e) {
 
 				String id = textField.getText();
-				System.out.println("id : " + id + " 입니다.");
 				HardGameFrame gameframe = new HardGameFrame(id);
 				setVisible(false);
 			}
 		});
 
 		registerButton.setBounds(24, 41, 179, 35);
+		registerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		registerButton.setBackground(Color.WHITE);
 		getContentPane().add(registerButton);
 
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyChar() == '\n') {
-					System.out.println("click enter");
 					String id = textField.getText();
-					System.out.println("id : " + id + " 입니다.");
 					HardGameFrame gameframe = new HardGameFrame(id);// 이지 게임프레임으로 전환
 					setVisible(false);
 				}
@@ -78,7 +79,6 @@ public class LoginFrame_hard extends JFrame {// 하드 모드 로그인 프레�
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String id = textField.getText();
-			System.out.println("id : " + id + " 입니다.");
 			HardGameFrame gameframe = new HardGameFrame(id);
 			setVisible(false);
 

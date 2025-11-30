@@ -9,8 +9,6 @@ import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-import easygamescreen.InformationFrame;
-
 public class FirstFrame extends JFrame {
 
 	private Clip clip;
@@ -18,7 +16,7 @@ public class FirstFrame extends JFrame {
 
 	public FirstFrame() {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image img = toolkit.getImage("resource/img/favcion_bugi.png");// 이모티콘
+		Image img = toolkit.getImage("resource/img/icon_su.jpg");// 이모티콘
 		setIconImage(img);
 
 		setTitle("수룡이 타자 게임");

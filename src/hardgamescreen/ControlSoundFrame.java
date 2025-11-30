@@ -16,7 +16,7 @@ public class ControlSoundFrame extends JFrame {// 사운드 파일
 
 	public ControlSoundFrame() {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image img = toolkit.getImage("resource/img/favcion_bugi.png");// 이모티콘
+		Image img = toolkit.getImage("resource/img/icon_su.jpg");// 이모티콘
 		setIconImage(img);
 		setTitle("배경 음악 소리 조절");
 		setSize(400, 146);
@@ -32,7 +32,7 @@ public class ControlSoundFrame extends JFrame {// 사운드 파일
 		slider.setBounds(34, 46, 320, 45);
 
 		getContentPane().add(slider);
-		JLabel lblNewLabel = new JLabel("배경음악 볼륨 조절");
+		JLabel lblNewLabel = new JLabel("볼륨 조절");
 		lblNewLabel.setFont(new Font("한컴 말랑말랑 Regular", Font.PLAIN, 20));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(34, 10, 305, 26);

@@ -675,11 +675,11 @@ public class HardGamePanel extends JPanel {
 				for (int i = 0; i < textArr.size(); i++) {
 					TextObject textTmp = (TextObject) textArr.get(i);
 
-					while (scorePanel.getScore() >= 100 && !feverTimeActive) {
+					while (scorePanel.getScore() > 100 && !feverTimeActive) {
 						feverLabel.setVisible(true);
 						feverTimeActive = true; // 피버 타임 시작
 
-						if (scorePanel.getScore() >= 400) {
+						if (scorePanel.getScore() > 400) {
 							// 특정 조건에서 피버 타임 종료
 							feverLabel.setVisible(false);
 							feverTimeActive = false;
@@ -695,7 +695,7 @@ public class HardGamePanel extends JPanel {
 						switch (textTmp.getAbility()) {
 						case 0: // white 흰색 점수+10
 							if (feverTimeActive) {
-								scorePanel.increase(20); // Double the points during fever time
+								scorePanel.increase(20); // 피버타임 때 점수 2배
 							} else {
 								scorePanel.increase(10);
 							}
@@ -709,7 +709,7 @@ public class HardGamePanel extends JPanel {
 						case 1: // 보라색
 							threadStateFlag = 200; // 3초간 정지, 점수+20
 							if (feverTimeActive) {
-								scorePanel.increase(40); // Double the points during fever time
+								scorePanel.increase(40);// 피버타임 때 점수 2배
 							} else {
 								scorePanel.increase(20);
 							}
@@ -722,7 +722,7 @@ public class HardGamePanel extends JPanel {
 
 						case 2: // 빨간색
 							if (feverTimeActive) {
-								scorePanel.increase(100); // Double the points during fever time
+								scorePanel.increase(100); // 피버타임 때 점수 2배
 							} else {
 								scorePanel.increase(50);
 							}
@@ -741,7 +741,7 @@ public class HardGamePanel extends JPanel {
 						case 3: // 초록색
 							threadStateFlag = -10; // 5초간 빨라짐.
 							if (feverTimeActive) {
-								scorePanel.increase(20); // Double the points during fever time
+								scorePanel.increase(20); /// 피버타임 때 점수 2배
 							} else {
 								scorePanel.increase(10);
 							}
@@ -749,15 +749,15 @@ public class HardGamePanel extends JPanel {
 							textArr.remove(i); // 지우기
 							repaint();
 							t.setText("");
-							// System.out.println("Red ability");
+
 							break;
 						}
 						flag = -1; // 정답이 있었다.
 						break;
 					}
 					t.setText(""); // 맞추든 틀리든 지워준다.
-				} // End for
-					// 틀린경우
+				}
+				// 틀린경우
 				if (flag == 0) { // flag가 그냥 나온 경우 -> 틀렸다.
 					loadWrongAnswerEffectAudio();
 					Dimension d = editPanel.getSize();

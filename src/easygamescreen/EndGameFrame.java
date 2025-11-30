@@ -28,7 +28,7 @@ public class EndGameFrame extends JFrame {
 
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-		Image img = toolkit.getImage("resource/img/favcion_bugi.png");
+		Image img = toolkit.getImage("resource/img/icon_su.jpg");
 		setIconImage(img);
 		setSize(380, 280);
 		setTitle("GAME OVER");
@@ -65,7 +65,7 @@ public class EndGameFrame extends JFrame {
 
 			JLabel scoreLabel = new JLabel("0");
 			scoreLabel.setFont(new Font("한컴 말랑말랑 Regular", Font.BOLD, 18));
-			scoreLabel.setForeground(Color.WHITE);
+			scoreLabel.setForeground(Color.BLACK);
 			scoreLabel.setBounds(114, 193, 178, 26);
 			String strScore = Integer.toString(score);
 			scoreLabel.setText(strScore + " 점");

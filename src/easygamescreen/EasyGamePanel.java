@@ -337,7 +337,7 @@ public class EasyGamePanel extends JPanel {
 
 		getTimeThread().interrupt(); // 중단된 스레드에 대해 interrupt 호출
 		try {
-			getTimeThread().join(); // 스레드의 종료를 기다림
+			getTimeThread().join(); // 스레드의 종료를 기다린다
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -620,27 +620,27 @@ public class EasyGamePanel extends JPanel {
 		itemTimer.start();
 
 		input.addActionListener(new ActionListener() {
-			int flag = 0;
+			int flag = 0;// 플래그 초기값
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JTextField t = (JTextField) e.getSource();
 				String inWord = t.getText();
 				boolean correctAnswer = false; // 정답 여부를 나타내는 플래그
-				boolean feverTimeActive = false;
+				boolean feverTimeActive = false;// 피버타임 활성화 플래그
 
 				for (int i = 0; i < textArr.size(); i++) {
 					TextObject textTmp = (TextObject) textArr.get(i);
 
-					while (scorePanel.getScore() >= 100 && !feverTimeActive) {
+					while (scorePanel.getScore() > 100 && !feverTimeActive) {
 
 						feverLabel.setVisible(true);
-						feverTimeActive = true; // 피버 타임 시작
+						feverTimeActive = true; // 피버 타임 시작 (true로 활성화)
 
-						if (scorePanel.getScore() >= 400) {
+						if (scorePanel.getScore() > 400) {
 							// 점수가 400점을 넘어가면 피버 타임 종료
 							feverLabel.setVisible(false);
-							feverTimeActive = false;
+							feverTimeActive = false; // 피버 타임 종료 (false로 비활성화)
 							System.out.println("Fever time deactivated due to score >= 400!");
 							break;
 						}
@@ -710,7 +710,7 @@ public class EasyGamePanel extends JPanel {
 						flag = -1; // 정답이 있었다.
 						break;// 정답을 찾았으므로 반복문 탈출
 					}
-					t.setText(""); // 맞추든 틀리든 지워준다.
+					t.setText(""); // 맞추든 틀리든 지워준다
 				}
 				// 틀린경우
 
